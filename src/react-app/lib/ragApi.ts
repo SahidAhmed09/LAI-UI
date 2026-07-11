@@ -649,20 +649,28 @@ export type HealthProbe =
   | { reachable: true; status: HealthStatus }
   | { reachable: false };
 
-export async function fetchHealth(
-  signal?: AbortSignal,
-): Promise<HealthProbe> {
-  try {
-    const res = await apiFetch(`${BACKEND_URL}/health`, {
-      method: "GET",
-      signal,
-    });
-    if (!res.ok) return { reachable: false };
-    const status = (await res.json()) as HealthStatus;
-    return { reachable: true, status };
-  } catch {
-    return { reachable: false };
-  }
+export async function fetchHealth(): Promise<HealthProbe> {
+  // DEMO MODE: real /health probe disabled — the boot gate always reports
+  // ready so the dashboard is reachable without a live backend. To restore
+  // the real cold-start/offline gate, uncomment the block below and remove
+  // the mocked return underneath it.
+  //
+  // try {
+  //   const res = await apiFetch(`${BACKEND_URL}/health`, {
+  //     method: "GET",
+  //     signal,
+  //   });
+  //   if (!res.ok) return { reachable: false };
+  //   const status = (await res.json()) as HealthStatus;
+  //   return { reachable: true, status };
+  // } catch {
+  //   return { reachable: false };
+  // }
+
+  return {
+    reachable: true,
+    status: { ok: true, loaded: true, llm_backend: "remote", llm_model: "demo-model", n_sessions: 0 },
+  };
 }
 
 

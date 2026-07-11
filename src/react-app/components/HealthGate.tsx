@@ -58,7 +58,7 @@ export function HealthGate({ children }: HealthGateProps) {
       const ctl = new AbortController();
       abortRef.current = ctl;
 
-      const result = await fetchHealth(ctl.signal);
+      const result = await fetchHealth();
       if (cancelled || ctl.signal.aborted) return;
 
       if (!result.reachable) {
