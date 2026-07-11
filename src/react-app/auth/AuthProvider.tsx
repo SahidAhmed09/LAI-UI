@@ -109,24 +109,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshProfile]);
 
   const login = useCallback(
-    async (email: string, password: string, rememberMe = false): Promise<void> => {
-      const body = await apiJson<AccessTokenResponse>("/auth/login", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, password, remember_me: rememberMe }),
-        noRefresh: true,
+    async (email: string): Promise<void> => {
+      // DEMO MODE: real /auth/login call disabled — any email/password
+      // combination signs in. To restore real authentication, uncomment
+      // the block below and remove the mock-session block underneath it.
+      //
+      // const body = await apiJson<AccessTokenResponse>("/auth/login", {
+      //   method: "POST",
+      //   headers: { "content-type": "application/json" },
+      //   body: JSON.stringify({ email, password, remember_me: rememberMe }),
+      //   noRefresh: true,
+      // });
+      // setAccessToken(body.access_token);
+      // await refreshProfile();
+
+      setAccessToken("demo-access-token");
+      reconcileUserScope("demo-user");
+      setUser({
+        id: "demo-user",
+        email,
+        fullName: "Demo User",
+        company: null,
+        role: "admin",
+        orgId: "demo-org",
       });
-      setAccessToken(body.access_token);
-      await refreshProfile();
+      setStatus("authenticated");
     },
-    [refreshProfile],
+    [],
   );
 
   const signup = useCallback(
     async ({
       fullName,
       email,
-      password,
       company,
     }: {
       fullName: string;
@@ -134,21 +149,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password: string;
       company?: string;
     }): Promise<void> => {
-      const body = await apiJson<AccessTokenResponse>("/auth/signup", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          full_name: fullName,
-          company: company ?? null,
-        }),
-        noRefresh: true,
+      // DEMO MODE: real /auth/signup call disabled — any details succeed.
+      // To restore real authentication, uncomment the block below and
+      // remove the mock-session block underneath it.
+      //
+      // const body = await apiJson<AccessTokenResponse>("/auth/signup", {
+      //   method: "POST",
+      //   headers: { "content-type": "application/json" },
+      //   body: JSON.stringify({
+      //     email,
+      //     password,
+      //     full_name: fullName,
+      //     company: company ?? null,
+      //   }),
+      //   noRefresh: true,
+      // });
+      // setAccessToken(body.access_token);
+      // await refreshProfile();
+
+      setAccessToken("demo-access-token");
+      reconcileUserScope("demo-user");
+      setUser({
+        id: "demo-user",
+        email,
+        fullName,
+        company: company ?? null,
+        role: "admin",
+        orgId: "demo-org",
       });
-      setAccessToken(body.access_token);
-      await refreshProfile();
+      setStatus("authenticated");
     },
-    [refreshProfile],
+    [],
   );
 
   const logout = useCallback(async (): Promise<void> => {
